@@ -1,0 +1,19 @@
+name: Job Digest (every 3 hours)
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: digest-cron
+    steps:
+      - name: Trigger digest
+        run: |
+          set -e
+          BASE="https://jobsentry.vercel.app"
+          curl -fsS "$BASE/api/digest"
