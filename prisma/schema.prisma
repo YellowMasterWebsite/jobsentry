@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String        @id @default(cuid())
+  email       String        @unique
+  name        String?
+  createdAt   DateTime      @default(now())
+  requirements Requirement[]
+  connections  Connection[]
+  messages     Message[]
+}
+
+model Requirement {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  title        String
+  keywords     String
+  excludes     String
+  locations    String
+  seniority    String
+  remoteOnly   Boolean  @default(false)
+  recencyHours Int      @default(3)
+  maxApplicants Int?
+  sources      String
+  createdAt    DateTime @default(now())
+  matches      Match[]
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String?
+  url         String   @unique
+  source      String
+  postedAt    DateTime @default(now())
+  applicants  Int?
+  rawJson     String?  
+  createdAt   DateTime @default(now())
+  matches     Match[]
+}
+
+
+model Match {
+  id             String @id @default(cuid())
+  jobId          String
+  requirementId  String
+  score          Float
+  createdAt      DateTime @default(now())
+  job            Job        @relation(fields: [jobId], references: [id])
+  requirement    Requirement @relation(fields: [requirementId], references: [id])
+}
+
+model Connection {
+  id            String  @id @default(cuid())
+  userId        String
+  user          User    @relation(fields: [userId], references: [id])
+  name          String
+  headline      String?
+  company       String?
+  linkedin      String?
+  firstDegree   Boolean @default(true)
+  lastMessagedAt DateTime?
+}
+
+model Message {
+  id            String  @id @default(cuid())
+  userId        String
+  user          User    @relation(fields: [userId], references: [id])
+  withName      String
+  platform      String
+  lastActivityAt DateTime
+}
