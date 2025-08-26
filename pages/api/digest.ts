@@ -4,7 +4,7 @@ import { overallScore, findWarmIntros } from "@/lib/match";
 import { sendEmail } from "@/lib/email";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const user = await prisma.user.findFirst({ where: { email: "you@example.com" }, include: { requirements: true, connections: true } });
+  const user = await prisma.user.findFirst({ where: { email: "tulika.jatrele@gmail.com" }, include: { requirements: true, connections: true } });
   if (!user) return res.status(200).json({ ok: true, note: "no user" });
 
   const now = new Date();

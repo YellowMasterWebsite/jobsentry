@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "@/lib/db";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const user = await prisma.user.upsert({ where: { email: "you@example.com" }, update: {}, create: { email: "you@example.com", name: "You" } });
+  const user = await prisma.user.upsert({ where: { email: "tulika.jatrele@gmail.com" }, update: {}, create: { email: "tulika.jatrele@gmail.com", name: "You" } });
   if (req.method === "POST") {
     const data = req.body;
     const r = await prisma.requirement.create({ data: { ...data, userId: user.id } });
