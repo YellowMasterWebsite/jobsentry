@@ -1,0 +1,32 @@
+name: Job Ingestion (every 30 minutes)
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: ingest-cron
+      cancel-in-progress: true
+    steps:
+      - name: Ping Greenhouse orgs
+        run: |
+          set -e
+          BASE="https://jobsentry.vercel.app"
+          for ORG in vercel openai snowflake databricks cloudflare plaid airtable ramp rippling notion asana; do
+            echo "→ Greenhouse: $ORG"
+            curl -fsS "$BASE/api/ingest/greenhouse?org=$ORG"
+          done
+
+      - name: Ping Lever orgs
+        run: |
+          set -e
+          BASE="https://jobsentry.vercel.app"
+          for ORG in anthropic figma datadog samsara brex; do
+            echo "→ Lever: $ORG"
+            curl -fsS "$BASE/api/ingest/lever?org=$ORG"
+          done
